@@ -279,9 +279,12 @@ const volumeRenderingFragmentSource = `#version 300 es
 
           //
           //   @TODO: Implement the front-to-back compositing here
-          //result.rgb = (1.0 - result.a) * color.rgb * color.a + result.rgb; 
+          //
+              result.rgb = (1.0 - result.a) * color.rgb * color.a + result.rgb; 
               result.a = (1.0 - result.a) * color.a + result.a; 
-
+              
+              //Add the color to the incoming rays in result to implement
+                                      // The front to back compositing. 
 
 
 
@@ -290,9 +293,10 @@ const volumeRenderingFragmentSource = `#version 300 es
           //
           //   @TODO: Implement the first hitpoint compositing here
           //
-
-
-
+            if (color.a > 0.2){
+              result = color;
+              t = tEnd; 
+            }
 
 
         }
@@ -300,8 +304,10 @@ const volumeRenderingFragmentSource = `#version 300 es
           //
           //   @TODO: Implement the maximum-intensity projection here
           //
-
-
+          
+          if (color.a > result.a) {
+            result = color; 
+          }
 
 
         }
