@@ -292,7 +292,7 @@ const volumeRenderingFragmentSource = `#version 300 es
           //
           //   @TODO: Implement the first hitpoint compositing here
           //
-            if (color.a > 0.2){
+            if (color.a > 0.){
               result = color;
               t = tEnd; 
             }
@@ -509,37 +509,6 @@ function updateTransferFunction(gl, transferFunction) {
   // the image.  The remainder of the ramp is just using different angles for the color
   // components
 
-  for (let i = start1; i < (range1+start1); i += 4) {
-    // Set RGBA all to 0
-
-    data[i] = colorRGB1.r;
-    data[i + 1] = colorRGB1.g;
-    data[i + 2] =  colorRGB1.b;
-    data[i + 3] = alpha1;
-  }
-  
-  for (let i = start2; i < range2+start2; i += 4) {
-    // Set RGBA all to 0
-   
-    data[i] = colorRGB2.r;
-    data[i + 1] = colorRGB2.g;
-    data[i + 2] =  colorRGB2.b;
-    data[i + 3] = alpha2;
-  } 
-
-  for (let i = start3; i < range3+start3;  i += 4) {
-    // convert i into a value [0, 256] and set it 
-    
-    data[i] = colorRGB3.r;
-    data[i + 1] = colorRGB3.g;
-    data[i + 2] =  colorRGB3.b;
-    data[i + 3] = alpha3;
-  }
-  
-  
-
-
-
   // const cutoff = 50;
 
   // for (let i = 0; i < cutoff * 4; i += 4) {
@@ -566,6 +535,72 @@ function updateTransferFunction(gl, transferFunction) {
 
   // @TODO:  Replace the transfer function specification above with your own transfer
   //         function editor result
+
+  for (let i = start1; i < range1; i += 4) {
+    // Set RGBA all to 0
+
+    let halvags = start1+(range1-start1)/2;
+    let pixelI = i;
+
+    // fade in och ut i 
+    if (pixelI <= halvags) {
+      let x1 = (pixelI-start1)/(halvags-start1);
+      data[i] = colorRGB1.r * x1;
+      data[i + 1] = colorRGB1.g * x1;
+      data[i + 2] = colorRGB1.b * x1;
+      data[i + 3] = alpha1 * x1 ;
+    } else {
+      let x1 = (pixelI-range1)/(range1-halvags);
+      data[i] = colorRGB1.r * -x1;
+      data[i + 1] = colorRGB1.g * -x1;
+      data[i + 2] = colorRGB1.b * -x1;
+      data[i + 3] = alpha1 * -x1 ;
+    }
+  }
+  
+  for (let i = start2; i < range2; i += 4) {
+    // Set RGBA all to 0
+   
+    let halvags = start2+(range2-start2)/2;
+    let pixelI = i;
+
+    // fade in och ut i 
+    if (pixelI <= halvags) {
+      let x1 = (pixelI-start2)/(halvags-start2);
+      data[i] = colorRGB2.r * x1;
+      data[i + 1] = colorRGB2.g * x1;
+      data[i + 2] = colorRGB2.b * x1;
+      data[i + 3] = alpha2 * x1 ;
+    } else {
+      let x1 = (pixelI-range2)/(range2-halvags);
+      data[i] = colorRGB2.r * -x1;
+      data[i + 1] = colorRGB2.g * -x1;
+      data[i + 2] = colorRGB2.b * -x1;
+      data[i + 3] = alpha2 * -x1 ;
+    }
+  } 
+
+  for (let i = start3; i < range3;  i += 4) {
+    // convert i into a value [0, 256] and set it 
+    
+    let halvags = start3+(range3-start3)/2;
+    let pixelI = i;
+
+    // fade in och ut i 
+    if (pixelI <= halvags) {
+      let x1 = (pixelI-start3)/(halvags-start3);
+      data[i] = colorRGB3.r * x1;
+      data[i + 1] = colorRGB3.g * x1;
+      data[i + 2] = colorRGB3.b * x1;
+      data[i + 3] = alpha3 * x1 ;
+    } else {
+      let x1 = (pixelI-range3)/(range3-halvags);
+      data[i] = colorRGB3.r * -x1;
+      data[i + 1] = colorRGB3.g * -x1;
+      data[i + 2] = colorRGB3.b * -x1;
+      data[i + 3] = alpha3 * -x1 ;
+    }
+  }
 
   // Upload the new data to the texture
   console.log(117, "Updating the transfer function texture");
@@ -1077,11 +1112,11 @@ function postError(msg) {
      -->
   <div class="transferControls">
     <div class="slider1">
-      <label for="color1">Color: </label>
+      <label for="color1">Modify transfer function: </label>
 
       <br></br> 
 
-      <label for="alpha1" style="margin-right: 90px; margin-left: 100px">Alpha:</label>
+      <label for="alpha1" style="margin-right: 90px; margin-left: 100px">Opacity (Alpha):</label>
       <label for="alpha1" style="margin-right: 90px">Start:</label>
       <label for="alpha1">Range:</label>
 
@@ -1133,3 +1168,4 @@ function postError(msg) {
 </body>
 
 </html>
+
